@@ -1,20 +1,23 @@
 import { useState, useEffect } from 'react'
 import { Menu, X, Sun, Moon } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
-
-const navLinks = [
-  { href: '#about',   label: 'about' },
-  { href: '#projects',label: 'projects' },
-  { href: '#skills',  label: 'skills' },
-  { href: '#contact', label: 'contact' },
-]
+import { useLang } from '../context/LangContext'
 
 const focusRing = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950'
 
 export default function Navbar() {
-  const { theme, toggle } = useTheme()
+  const { theme, toggle: toggleTheme } = useTheme()
+  const { lang, toggle: toggleLang, t } = useLang()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const navLinks = [
+    { href: '#about',      label: t.navbar.about },
+    { href: '#experience', label: t.navbar.experience },
+    { href: '#projects',   label: t.navbar.projects },
+    { href: '#skills',     label: t.navbar.skills },
+    { href: '#contact',    label: t.navbar.contact },
+  ]
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -59,9 +62,18 @@ export default function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
+          {/* Language toggle */}
+          <button
+            onClick={toggleLang}
+            aria-label={lang === 'pt' ? 'Switch to English' : 'Mudar para Português'}
+            className={`h-9 px-2.5 rounded-lg flex items-center justify-center font-mono text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800/70 transition-colors duration-150 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700/50 ${focusRing}`}
+          >
+            {lang === 'pt' ? 'EN' : 'PT'}
+          </button>
+
           {/* Theme toggle */}
           <button
-            onClick={toggle}
+            onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             className={`size-9 rounded-lg flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800/70 transition-colors duration-150 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700/50 ${focusRing}`}
           >
@@ -70,10 +82,10 @@ export default function Navbar() {
 
           {/* CTA */}
           <a
-            href="mailto:thiago@example.com"
+            href="mailto:thiagoq.dev@gmail.com"
             className={`hidden md:inline-flex items-center gap-1.5 px-4 py-1.5 font-mono text-sm font-medium bg-cyan-500 hover:bg-cyan-400 text-zinc-950 rounded-lg transition-colors duration-150 hover:-translate-y-px ${focusRing}`}
           >
-            hire me
+            {t.navbar.hire}
           </a>
 
           {/* Mobile menu toggle */}
@@ -109,10 +121,10 @@ export default function Navbar() {
           ))}
           <div className="pt-2">
             <a
-              href="mailto:thiago@example.com"
+              href="mailto:thiagoq.dev@gmail.com"
               className={`flex items-center justify-center w-full py-2.5 font-mono text-sm font-medium bg-cyan-500 hover:bg-cyan-400 text-zinc-950 rounded-lg transition-colors duration-150 ${focusRing}`}
             >
-              hire me
+              {t.navbar.hire}
             </a>
           </div>
         </div>

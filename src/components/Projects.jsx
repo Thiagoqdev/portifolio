@@ -1,64 +1,37 @@
-import { ExternalLink, Github, Star, GitFork, Layers } from 'lucide-react'
+import { ExternalLink, Github, Layers } from 'lucide-react'
+import { useLang } from '../context/LangContext'
 
 const focusRing = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950'
 
-const projects = [
+const projectsMeta = [
   {
     id: 1,
-    name: 'Nexus',
-    tagline: 'Real-time collaborative workspace',
-    description:
-      'Multiplayer document editing with CRDT-powered conflict resolution, live cursors, and shared state management. Built to handle thousands of concurrent users.',
-    tags: ['TypeScript', 'React', 'WebSockets', 'Redis', 'PostgreSQL'],
-    stars: 1247,
-    forks: 183,
-    featured: true,
-    github: '#',
-    live: '#',
+    tags: ['Python', 'FastAPI', 'LLM', 'RAG', 'Embeddings', 'Azure'],
+    github: 'https://github.com/Thiagoqdev',
+    live: null,
     accent: 'from-cyan-500/[0.07] via-transparent to-transparent',
     accentBorder: 'hover:border-cyan-500/30 dark:hover:border-cyan-500/25',
   },
   {
     id: 2,
-    name: 'Forge CLI',
-    tagline: 'Developer productivity toolkit',
-    description:
-      'A batteries-included CLI that scaffolds projects, manages multi-environment configs, and automates repetitive dev workflows. 15+ built-in commands.',
-    tags: ['Go', 'Cobra', 'Docker', 'Shell'],
-    stars: 892,
-    forks: 67,
-    featured: false,
-    github: '#',
+    tags: ['Python', 'Azure', 'FastAPI', 'Docker', 'CI/CD'],
+    github: 'https://github.com/Thiagoqdev',
     live: null,
     accent: 'from-emerald-500/[0.07] via-transparent to-transparent',
     accentBorder: 'hover:border-emerald-500/30 dark:hover:border-emerald-500/25',
   },
   {
     id: 3,
-    name: 'Prism UI',
-    tagline: 'Composable design system',
-    description:
-      'An accessible, zero-dependency component library with 60+ primitives, dark mode tokens, and auto-generated Figma documentation.',
-    tags: ['React', 'TypeScript', 'Radix UI', 'Tailwind'],
-    stars: 543,
-    forks: 41,
-    featured: false,
-    github: '#',
-    live: '#',
+    tags: ['Next.js', 'React Native', 'Node.js', 'PostgreSQL', 'MongoDB'],
+    github: 'https://github.com/Thiagoqdev',
+    live: null,
     accent: 'from-violet-500/[0.07] via-transparent to-transparent',
     accentBorder: 'hover:border-violet-500/30 dark:hover:border-violet-500/25',
   },
   {
     id: 4,
-    name: 'ShardQL',
-    tagline: 'Type-safe query builder',
-    description:
-      'A fully-typed database query builder for Node.js with automatic N+1 detection, query batching, and Prisma-like developer ergonomics.',
-    tags: ['TypeScript', 'PostgreSQL', 'Node.js'],
-    stars: 321,
-    forks: 28,
-    featured: false,
-    github: '#',
+    tags: ['Java', 'Spring Boot', 'Docker', 'PostgreSQL', 'Swagger'],
+    github: 'https://github.com/Thiagoqdev',
     live: null,
     accent: 'from-amber-500/[0.07] via-transparent to-transparent',
     accentBorder: 'hover:border-amber-500/30 dark:hover:border-amber-500/25',
@@ -73,20 +46,18 @@ function Tag({ label }) {
   )
 }
 
-// Only compositor properties (transform) and border-color (SHOULD, not MUST, acceptable for interactive surfaces)
 const cardBase = 'transition-[transform,border-color] duration-150 ease-out hover:-translate-y-1'
 
-function ProjectCard({ project, featured = false }) {
+function ProjectCard({ project, meta, featured = false, featuredLabel }) {
   if (featured) {
     return (
       <div
-        className={`group relative rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br ${project.accent} p-8 ${project.accentBorder} ${cardBase} overflow-hidden`}
+        className={`group relative rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br ${meta.accent} p-8 ${meta.accentBorder} ${cardBase} overflow-hidden`}
       >
         {/* Featured badge */}
         <div className="font-mono text-xs text-cyan-500 mb-5 flex items-center gap-2">
-          {/* animate-pulse uses opacity — compositor safe */}
           <span className="size-1.5 rounded-full bg-cyan-500 inline-block animate-pulse" />
-          featured project
+          {featuredLabel}
         </div>
 
         <div className="flex flex-col lg:flex-row lg:items-start gap-6">
@@ -102,7 +73,7 @@ function ProjectCard({ project, featured = false }) {
               </div>
               <div className="flex items-center gap-2.5 flex-shrink-0">
                 <a
-                  href={project.github}
+                  href={meta.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`${project.name} on GitHub`}
@@ -110,9 +81,9 @@ function ProjectCard({ project, featured = false }) {
                 >
                   <Github size={18} />
                 </a>
-                {project.live && (
+                {meta.live && (
                   <a
-                    href={project.live}
+                    href={meta.live}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${project.name} live demo`}
@@ -128,19 +99,8 @@ function ProjectCard({ project, featured = false }) {
               {project.description}
             </p>
 
-            <div className="flex flex-wrap gap-1.5 mb-5">
-              {project.tags.map((t) => <Tag key={t} label={t} />)}
-            </div>
-
-            <div className="flex items-center gap-4 font-mono text-xs text-zinc-400 dark:text-zinc-500 tabular-nums">
-              <span className="flex items-center gap-1">
-                <Star size={12} className="text-amber-500" />
-                {project.stars.toLocaleString()}
-              </span>
-              <span className="flex items-center gap-1">
-                <GitFork size={12} />
-                {project.forks}
-              </span>
+            <div className="flex flex-wrap gap-1.5">
+              {meta.tags.map((tag) => <Tag key={tag} label={tag} />)}
             </div>
           </div>
         </div>
@@ -150,7 +110,7 @@ function ProjectCard({ project, featured = false }) {
 
   return (
     <div
-      className={`group relative rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br ${project.accent} p-6 ${project.accentBorder} ${cardBase} flex flex-col`}
+      className={`group relative rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br ${meta.accent} p-6 ${meta.accentBorder} ${cardBase} flex flex-col`}
     >
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="min-w-0">
@@ -163,7 +123,7 @@ function ProjectCard({ project, featured = false }) {
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <a
-            href={project.github}
+            href={meta.github}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${project.name} on GitHub`}
@@ -171,9 +131,9 @@ function ProjectCard({ project, featured = false }) {
           >
             <Github size={15} />
           </a>
-          {project.live && (
+          {meta.live && (
             <a
-              href={project.live}
+              href={meta.live}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${project.name} live demo`}
@@ -189,26 +149,19 @@ function ProjectCard({ project, featured = false }) {
         {project.description}
       </p>
 
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        {project.tags.map((t) => <Tag key={t} label={t} />)}
-      </div>
-
-      <div className="flex items-center gap-4 font-mono text-xs text-zinc-400 dark:text-zinc-500 tabular-nums">
-        <span className="flex items-center gap-1">
-          <Star size={11} className="text-amber-500" />
-          {project.stars.toLocaleString()}
-        </span>
-        <span className="flex items-center gap-1">
-          <GitFork size={11} />
-          {project.forks}
-        </span>
+      <div className="flex flex-wrap gap-1.5">
+        {meta.tags.map((tag) => <Tag key={tag} label={tag} />)}
       </div>
     </div>
   )
 }
 
 export default function Projects() {
-  const [featured, ...rest] = projects
+  const { t } = useLang()
+  const p = t.projects
+
+  const [featuredItem, ...restItems] = p.items
+  const [featuredMeta, ...restMeta] = projectsMeta
 
   return (
     <section id="projects" className="relative py-28 bg-zinc-50 dark:bg-zinc-950">
@@ -217,31 +170,33 @@ export default function Projects() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="font-mono text-sm text-cyan-500 mb-3 flex items-center gap-2">
           <Layers size={13} />
-          <span>// projects</span>
+          <span>{p.sectionLabel}</span>
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-zinc-50 text-balance">
-            Selected work
+            {p.heading}
           </h2>
           <a
-            href="https://github.com/thiagodev"
+            href="https://github.com/Thiagoqdev"
             target="_blank"
             rel="noopener noreferrer"
             className={`font-mono text-sm text-zinc-500 dark:text-zinc-400 hover:text-cyan-500 transition-colors duration-150 flex items-center gap-1.5 group rounded ${focusRing}`}
           >
             <Github size={13} />
-            view all on GitHub
+            {p.viewAll}
             <ExternalLink size={11} className="opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
           </a>
         </div>
 
         <div className="mb-5">
-          <ProjectCard project={featured} featured />
+          <ProjectCard project={featuredItem} meta={featuredMeta} featured featuredLabel={p.featured} />
         </div>
 
         <div className="grid md:grid-cols-3 gap-4">
-          {rest.map((p) => <ProjectCard key={p.id} project={p} />)}
+          {restItems.map((item, i) => (
+            <ProjectCard key={item.name} project={item} meta={restMeta[i]} />
+          ))}
         </div>
       </div>
     </section>

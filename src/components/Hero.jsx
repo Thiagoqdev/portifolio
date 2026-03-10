@@ -1,16 +1,10 @@
 import { useEffect, useState } from 'react'
-import { ArrowRight, Github, Linkedin, Twitter, Terminal } from 'lucide-react'
-
-const roles = [
-  'Full-Stack Developer',
-  'TypeScript Enthusiast',
-  'Open Source Contributor',
-  'UI Craftsman',
-]
+import { ArrowRight, Github, Linkedin, Terminal, Download } from 'lucide-react'
+import { useLang } from '../context/LangContext'
 
 const focusRing = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-950'
 
-function Typewriter() {
+function Typewriter({ roles }) {
   const [roleIndex, setRoleIndex] = useState(0)
   const [displayed, setDisplayed] = useState('')
   const [isDeleting, setIsDeleting] = useState(false)
@@ -31,7 +25,7 @@ function Typewriter() {
     }
 
     return () => clearTimeout(timeout)
-  }, [displayed, isDeleting, roleIndex])
+  }, [displayed, isDeleting, roleIndex, roles])
 
   return (
     <span className="inline-flex items-center gap-1 font-mono text-base md:text-lg text-zinc-500 dark:text-zinc-400">
@@ -43,12 +37,14 @@ function Typewriter() {
 }
 
 const socials = [
-  { icon: Github,   href: 'https://github.com/thiagodev', label: 'GitHub' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
-  { icon: Twitter,  href: '#', label: 'Twitter / X' },
+  { icon: Github,   href: 'https://github.com/Thiagoqdev', label: 'GitHub' },
+  { icon: Linkedin, href: 'https://linkedin.com/in/thiagovqueiroz', label: 'LinkedIn' },
 ]
 
 export default function Hero() {
+  const { t } = useLang()
+  const h = t.hero
+
   return (
     <section
       id="home"
@@ -57,10 +53,10 @@ export default function Hero() {
       {/* Backgrounds */}
       <div className="absolute inset-0 bg-zinc-50 dark:bg-zinc-950 transition-colors duration-200" />
       <div className="absolute inset-0 bg-grid-light dark:bg-grid-dark" />
-      {/* Fade-out at bottom — explicitly requested atmospheric effect */}
+      {/* Fade-out at bottom */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-zinc-50 dark:to-zinc-950 pointer-events-none" />
 
-      {/* Ambient orbs — static, not animated */}
+      {/* Ambient orbs */}
       <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-cyan-500/5 dark:bg-cyan-500/8 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-indigo-500/4 dark:bg-indigo-500/6 rounded-full blur-3xl pointer-events-none" />
 
@@ -70,25 +66,27 @@ export default function Hero() {
           <Terminal size={12} className="text-cyan-500" />
           <span>$ whoami</span>
           <span className="text-cyan-500">→</span>
-          <span className="text-zinc-600 dark:text-zinc-400">thiago@dev</span>
+          <span className="text-zinc-600 dark:text-zinc-400">{h.whoami}</span>
         </div>
 
-        {/* Headline — text-balance for optimal line breaks */}
-        <h1 className="animate-fade-up delay-100 text-5xl md:text-7xl lg:text-8xl font-bold leading-none text-zinc-900 dark:text-zinc-50 mb-6 text-balance">
-          I build things<br />
-          <span className="text-gradient">for the web.</span>
+        {/* Headline — reduced from 8xl to 6xl */}
+        <h1 className="animate-fade-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-zinc-900 dark:text-zinc-50 mb-6 text-balance">
+          {h.headline1}<br />
+          <span className="text-gradient">{h.headline2}</span>
         </h1>
 
-        {/* Typewriter — no fixed height on text container */}
+        {/* Typewriter */}
         <div className="animate-fade-up delay-200 mb-8 flex items-center">
-          <Typewriter />
+          <Typewriter roles={h.roles} />
         </div>
 
-        {/* Description — text-pretty for paragraph hyphenation */}
+        {/* Description */}
         <p className="animate-fade-up delay-300 max-w-xl text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-10 text-pretty">
-          Hi, I'm <strong className="text-zinc-900 dark:text-zinc-100 font-semibold">Thiago</strong> — a software engineer
-          obsessed with clean architecture, great UX, and code that scales. I turn complex problems into
-          elegant, maintainable solutions.
+          {h.descriptionRaw.split('Thiago Queiroz').map((part, i, arr) =>
+            i < arr.length - 1
+              ? [part, <strong key={i} className="text-zinc-900 dark:text-zinc-100 font-semibold">Thiago Queiroz</strong>]
+              : part
+          )}
         </p>
 
         {/* CTAs */}
@@ -97,7 +95,7 @@ export default function Hero() {
             href="#projects"
             className={`inline-flex items-center gap-2 px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-zinc-950 font-semibold text-sm rounded-xl transition-colors duration-150 hover:-translate-y-0.5 group ${focusRing}`}
           >
-            View Projects
+            {h.cta}
             <ArrowRight
               size={15}
               strokeWidth={2.5}
@@ -108,13 +106,22 @@ export default function Hero() {
             href="#contact"
             className={`inline-flex items-center gap-2 px-6 py-3 text-zinc-700 dark:text-zinc-300 font-semibold text-sm rounded-xl border border-zinc-300 dark:border-zinc-700/70 hover:border-cyan-500/40 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/50 transition-colors duration-150 hover:-translate-y-0.5 ${focusRing}`}
           >
-            Get in touch
+            {h.contact}
+          </a>
+          {/* Download CV button */}
+          <a
+            href="/curriculo-thiago-queiroz.pdf"
+            download
+            className={`inline-flex items-center gap-2 px-6 py-3 text-zinc-700 dark:text-zinc-300 font-semibold text-sm rounded-xl border border-zinc-300 dark:border-zinc-700/70 hover:border-cyan-500/40 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/50 transition-colors duration-150 hover:-translate-y-0.5 group ${focusRing}`}
+          >
+            <Download size={14} className="group-hover:-translate-y-0.5 transition-transform duration-150" />
+            {h.download}
           </a>
         </div>
 
         {/* Socials */}
         <div className="animate-fade-up delay-500 flex items-center gap-1">
-          <span className="font-mono text-xs text-zinc-400 dark:text-zinc-600 mr-3">find me on</span>
+          <span className="font-mono text-xs text-zinc-400 dark:text-zinc-600 mr-3">{h.findMe}</span>
           {socials.map(({ icon: Icon, href, label }) => (
             <a
               key={label}
@@ -132,7 +139,7 @@ export default function Hero() {
 
       {/* Scroll indicator */}
       <div className="animate-fade-in delay-1000 absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-zinc-400 dark:text-zinc-600 pointer-events-none">
-        <span className="font-mono text-xs uppercase">scroll</span>
+        <span className="font-mono text-xs uppercase">{h.scroll}</span>
         <div className="w-px h-12 bg-gradient-to-b from-zinc-300 dark:from-zinc-700 to-transparent" />
       </div>
     </section>

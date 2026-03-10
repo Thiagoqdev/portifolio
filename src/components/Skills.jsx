@@ -1,54 +1,50 @@
 import { useEffect, useRef, useState } from 'react'
 import { Cpu } from 'lucide-react'
+import { useLang } from '../context/LangContext'
 
-const categories = [
+const categoryData = [
   {
-    name: 'Languages',
-    // bg-* derived by replacing text- prefix at render time
     color: 'text-cyan-500 dark:text-cyan-400',
     items: [
-      { name: 'TypeScript', level: 95 },
-      { name: 'Go',         level: 80 },
-      { name: 'Python',     level: 75 },
-      { name: 'SQL',        level: 88 },
+      { name: 'Python',    level: 95 },
+      { name: 'LLM / RAG', level: 90 },
+      { name: 'FastAPI',   level: 90 },
+      { name: 'Langchain', level: 80 },
     ],
   },
   {
-    name: 'Frontend',
     color: 'text-violet-500 dark:text-violet-400',
     items: [
-      { name: 'React',         level: 95 },
-      { name: 'Next.js',       level: 90 },
-      { name: 'Tailwind CSS',  level: 92 },
-      { name: 'Framer Motion', level: 78 },
+      { name: 'React',        level: 80 },
+      { name: 'Next.js',      level: 80 },
+      { name: 'React Native', level: 75 },
+      { name: 'TypeScript',   level: 80 },
     ],
   },
   {
-    name: 'Backend',
     color: 'text-emerald-500 dark:text-emerald-400',
     items: [
-      { name: 'Node.js',    level: 90 },
-      { name: 'PostgreSQL', level: 85 },
-      { name: 'Redis',      level: 80 },
-      { name: 'Docker',     level: 85 },
+      { name: 'Java / Spring', level: 80 },
+      { name: 'Node.js',       level: 80 },
+      { name: 'PostgreSQL',    level: 90 },
+      { name: 'MongoDB',       level: 80 },
     ],
   },
   {
-    name: 'Tooling',
     color: 'text-amber-500 dark:text-amber-400',
     items: [
-      { name: 'Git',    level: 95 },
+      { name: 'Azure',  level: 90 },
       { name: 'AWS',    level: 75 },
-      { name: 'Prisma', level: 88 },
-      { name: 'Bun',    level: 82 },
+      { name: 'Docker', level: 80 },
+      { name: 'CI/CD',  level: 80 },
     ],
   },
 ]
 
 const extra = [
-  'GraphQL', 'tRPC', 'Kubernetes', 'Terraform', 'Rust',
-  'Deno', 'Vitest', 'Playwright', 'Stripe API', 'Supabase',
-  'Vercel', 'Cloudflare Workers', 'WebSockets', 'gRPC',
+  'Embeddings', 'NLP', 'Django', 'REST APIs', 'MySQL',
+  'NoSQL', 'Scrum', 'Agile', 'Clean Architecture', 'Swagger',
+  'Tailwind CSS', 'JavaScript', 'SQL', 'Automated Testing',
 ]
 
 function SkillBar({ name, level, bgColor, visible }) {
@@ -58,7 +54,6 @@ function SkillBar({ name, level, bgColor, visible }) {
         <span className="font-mono text-sm text-zinc-700 dark:text-zinc-300">{name}</span>
         <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500 tabular-nums">{level}%</span>
       </div>
-      {/* Use scaleX transform instead of width — animates only compositor property */}
       <div className="h-1 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
         <div
           className={`h-full w-full rounded-full transition-transform duration-500 ease-out origin-left ${bgColor}`}
@@ -72,6 +67,8 @@ function SkillBar({ name, level, bgColor, visible }) {
 export default function Skills() {
   const ref = useRef(null)
   const [visible, setVisible] = useState(false)
+  const { t } = useLang()
+  const s = t.skills
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -82,6 +79,11 @@ export default function Skills() {
     return () => observer.disconnect()
   }, [])
 
+  const categories = categoryData.map((cat, i) => ({
+    ...cat,
+    name: s.categories[i].name,
+  }))
+
   return (
     <section id="skills" className="relative py-28 bg-white dark:bg-zinc-900/30" ref={ref}>
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-zinc-200 dark:via-zinc-800 to-transparent" />
@@ -89,11 +91,11 @@ export default function Skills() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="font-mono text-sm text-cyan-500 mb-3 flex items-center gap-2">
           <Cpu size={13} />
-          <span>// skills</span>
+          <span>{s.sectionLabel}</span>
         </div>
 
         <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-zinc-50 mb-12 text-balance">
-          Tools I work with
+          {s.heading}
         </h2>
 
         {/* Terminal window */}
@@ -106,16 +108,14 @@ export default function Skills() {
               <div className="size-2.5 rounded-full bg-emerald-400/80" />
             </div>
             <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500 mx-auto">
-              skills.sh
+              {s.filename}
             </span>
-            {/* Balance centering */}
             <div className="size-2.5 opacity-0" aria-hidden="true" />
           </div>
 
           {/* Skill grid */}
           <div className="p-8 bg-zinc-50 dark:bg-zinc-950 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
             {categories.map((cat) => {
-              // Derive bg-* class from text-* class for the bar fill
               const bgColor = cat.color.replace(/text-/g, 'bg-')
               return (
                 <div key={cat.name}>
@@ -142,7 +142,7 @@ export default function Skills() {
         {/* Extra tags */}
         <div>
           <div className="font-mono text-xs text-zinc-400 dark:text-zinc-500 mb-3">
-            + also worked with
+            {s.also}
           </div>
           <div className="flex flex-wrap gap-2">
             {extra.map((tag) => (

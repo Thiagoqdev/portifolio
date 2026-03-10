@@ -1,5 +1,9 @@
+import { useLang } from '../context/LangContext'
+
 export default function Footer() {
   const year = new Date().getFullYear()
+  const { t } = useLang()
+  const f = t.footer
 
   return (
     <footer className="py-8 bg-white dark:bg-zinc-900/30 border-t border-zinc-200 dark:border-zinc-800/60">
@@ -12,7 +16,7 @@ export default function Footer() {
 
         {/* Center */}
         <p className="font-mono text-xs text-zinc-400 dark:text-zinc-600 text-center">
-          © {year} Thiago. Built with{' '}
+          © {year} Thiago Queiroz. {f.builtWith}{' '}
           <span className="text-zinc-500 dark:text-zinc-500">React</span> +{' '}
           <span className="text-zinc-500 dark:text-zinc-500">Tailwind CSS</span>.
         </p>
@@ -20,7 +24,7 @@ export default function Footer() {
         {/* Status */}
         <div className="flex items-center gap-2 font-mono text-xs text-zinc-400 dark:text-zinc-600">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500" />
-          all systems go
+          {f.status}
         </div>
       </div>
     </footer>
